@@ -1,15 +1,55 @@
+import sqlite3
+import json
+from models import Order
+
 ORDERS = [
     {
         "id": 1,
         "metal_id": 3,
         "size_id": 2,
-        "style_id": 3,
-        "timestamp": 1614659931693
+        "style_id": 3
     }
 ]
 
 def get_all_orders():
-    return ORDERS
+    # Open a connection to the database
+    with sqlite3.connect("./kneeldiamonds.sqlite3") as conn:
+
+        # Just use these. It's a Black Box.
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            a.id = id
+            a.metal_id
+            a.size_id
+            a.style_id
+        FROM Order a
+        """)
+
+        # Initialize an empty list to hold all order representations
+        orders = []
+
+        # Convert rows of data into a Python list
+        dataset = db_cursor.fetchall()
+
+        # Iterate list of data returned from database
+        # for row in dataset:
+
+        # Create an order instance from the current row.Note that the database fields are specified in exact order of the parameters defined in the Order class above.
+
+        for row in dataset:
+
+            # Create an order instance from the current row
+            order = Order(row['id'], row['metal_id'], row['size_id'], row['style_id'])
+
+            # Add the dictionary representation of the order to the list
+            orders.append(order.__dict__)
+
+    return orders
+
 
 def get_single_order(id):
     # Variable to hold the found order, if it exists
