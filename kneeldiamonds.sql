@@ -51,3 +51,22 @@ INSERT INTO `Orders` VALUES (null, 2, 3, 2);
 INSERT INTO `Orders` VALUES (null, 5, 4, 1);
 INSERT INTO `Orders` VALUES (null, 4, 5, 3);
 INSERT INTO `Orders` VALUES (null, 1, 1, 3);
+
+SELECT
+    o.id,
+    o.metal_id,
+    o.size_id,
+    o.style_id,
+    m.metal metal_metal,
+    m.price metal_price,
+    s.carets size_carets,
+    s.price size_price,
+    x.style style_style,
+    x.price style_price
+FROM Orders o
+JOIN Metals m
+    ON m.id = o.metal_id
+JOIN Sizes s
+    ON s.id = o.size_id
+JOIN Styles x
+    ON x.id = o.style_id

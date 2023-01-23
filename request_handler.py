@@ -2,7 +2,7 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_metals, get_all_orders, get_all_sizes, get_all_styles
 from views import get_single_order, get_single_style, get_single_metal, get_single_size
-from views import create_order, delete_order, update_order
+from views import create_order, delete_order, update_order, update_metal
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -138,14 +138,14 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "orders":
             update_order(id, post_body)
 
-        # if resource == "customers":
-        #     update_customer(id, post_body)
+        if resource == "metals":
+            update_metal(id, post_body)
 
-        # if resource == "employees":
-        #     update_employee(id, post_body)
+        # if resource == "sizes":
+        #     update_size(id, post_body)
 
-        # if resource == "locations":
-        #     update_location(id, post_body)
+        # if resource == "styles":
+        #     update_style(id, post_body)
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
@@ -168,9 +168,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods',
-                         'GET, POST, PUT, DELETE')
+                        'GET, POST, PUT, DELETE')
         self.send_header('Access-Control-Allow-Headers',
-                         'X-Requested-With, Content-Type, Accept')
+                        'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
 

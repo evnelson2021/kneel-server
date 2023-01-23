@@ -1,3 +1,7 @@
+import sqlite3
+import json
+from models import Metal
+
 METALS = [
     {
         "id": 1,
@@ -27,7 +31,42 @@ METALS = [
 ]
 
 def get_all_metals():
-    return METALS
+    # Open a connection to the database
+    with sqlite3.connect("./kneeldiamonds.sqlite3") as conn:
+
+        # Just use these. It's a Black Box.
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.metal,
+            a.price
+        FROM Metals a
+        """)
+
+        # Initialize an empty list to hold all metal representations
+        metals = []
+
+        # Convert rows of data into a Python list
+        dataset = db_cursor.fetchall()
+
+        # Iterate list of data returned from database
+        # for row in dataset:
+
+        # Create an metal instance from the current row.Note that the database fields are specified in exact metal of the parameters defined in the Metal class above.
+
+        for row in dataset:
+
+            # Create an metal instance from the current row
+            metal = Metal(row['id'], row['metal'], row['price'])
+
+            # Add the dictionary representation of the metal to the list
+            metals.append(metal.__dict__)
+
+    return metals
 
 def get_single_metal(id):
     # Variable to hold the found metal, if it exists
@@ -42,3 +81,26 @@ def get_single_metal(id):
             requested_metal = metal
 
     return requested_metal
+
+def update_metal(id, new_metal):
+    with sqlite3.connect("./kneeldiamonds.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Metals
+            SET
+                metal = ?,
+                price = ?
+        WHERE id = ?
+        """, (new_metal['metal'], new_metal['price'], id, ))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True
